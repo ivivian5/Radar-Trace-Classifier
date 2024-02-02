@@ -1,0 +1,56 @@
+Assignment: A5 - Radar Trace Classifier
+Author: Vivian Lau (vlau02)
+Date: 12.03.2023
+-----------------------------------------------------------------------------------
+How to Run:
+-----------------------------------------------------------------------------------
+    python3 main.py
+    
+(Note) needs user input for whether to use default 
+
+-----------------------------------------------------------------------------------
+Assumptions:
+-----------------------------------------------------------------------------------
+    likelihood file has 2 lines of data comprised of only floats and voids
+    ...............................................................................
+    training file has 20 lines of data comprised of only floats and voids where
+    first 10 lines are bird data and last 10 lines are plane data
+    ...............................................................................
+    testing file has 10 lines of data comprised of only floats and voids
+
+-----------------------------------------------------------------------------------
+Files:
+-----------------------------------------------------------------------------------
+        Radar_Trace.py - Uses the training data to make new likelihoods for the
+                model and then Naive Bayesian Classification to classify each line
+                of velocities in the testing file
+    ...............................................................................
+        main.py - Prompts user for input for files to read and runs the classifier
+                to classify a classification for each of the 10 lines of the
+                testing file
+
+-----------------------------------------------------------------------------------
+Solution Structure:
+
+The Radar Trace Classifier first makes a new likelihood function using the training
+data given by computing the means and standard deviations for the velocities within
+a window. Then the standard deviations are all binned into 0.5 size bins before
+computing the probability of a given standard deviation of being in the bin and
+storing as our likelihood function.
+
+This model is then used to classify each line of the testing data as bird or plane.
+For each window of velocities in the testing data, apart from the very first 
+(which has no prior) the transition probability is applied to the previous
+probability saved. Then, it calculates the new likelihood (product between the 
+likelihood of the mean velocity occurring, which is given in the likelihood files,
+and the new likelihood of the standard deviation occurring) of being a bird and
+being a plane. The likelihood is multiplied because mean and standard deviation are
+independent of each other. This likelihood is then multiplied to the prior before
+normalized and compared to classify the velocities as coming from a bird or a
+plane. After applying this to the state of every window of velocities in the line
+given, the final classification of the line is found as the solution.
+
+The window size I went with was 150 velocities which results in 100% accuracy.
+Note: The extra velocities that do not make up a full window is added to the 
+last window.
+-----------------------------------------------------------------------------------
